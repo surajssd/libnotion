@@ -203,6 +203,11 @@ type PropertyFilter struct {
 	LastEditedTime *DateFilter        `json:"last_edited_time,omitempty"`
 }
 
+var (
+	BoolFalse = false
+	BoolTrue  = true
+)
+
 type TextFilter struct {
 	Equals         string `json:"equals,omitempty"`
 	DoesNotEqual   string `json:"does_not_equal,omitempty"`
@@ -226,8 +231,8 @@ type NumberFilter struct {
 }
 
 type CheckboxFilter struct {
-	Equals       bool `json:"equals,omitempty"`
-	DoesNotEqual bool `json:"does_not_equal,omitempty"`
+	Equals       *bool `json:"equals,omitempty"`
+	DoesNotEqual *bool `json:"does_not_equal,omitempty"`
 }
 
 type SelectFilter struct {
