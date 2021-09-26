@@ -14,6 +14,8 @@ import (
 	"github.com/surajssd/libnotion/api"
 )
 
+// QueryDatabase takes database id and a query object and returns list of pages based on the query.
+// Set appropriate parameters in the query object to get the relevant results.
 func (nc *NotionClient) QueryDatabase(id string, query *api.QueryDB) ([]api.Page, error) {
 	hasMore := true
 	startCursor := ""

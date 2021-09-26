@@ -1,8 +1,15 @@
 package rest
 
 const (
-	APIURL           = "https://api.notion.com"
-	NotionVersion    = "2021-05-13"
-	SubPathPages     = "v1/pages"
+	// APIURL is the base URL of Notion API.
+	APIURL = "https://api.notion.com"
+
+	// NotionVersion is the Notion API release version.
+	NotionVersion = "2021-05-13"
+
+	// SubPathPages is the Notion API sub path for querying pages.
+	SubPathPages = "v1/pages"
+
+	// SubPathDatabases is the Notion API sub path for querying databases.
 	SubPathDatabases = "v1/databases"
 )

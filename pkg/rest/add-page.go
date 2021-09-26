@@ -13,7 +13,7 @@ import (
 	"github.com/surajssd/libnotion/api"
 )
 
-// AddPage takes a page resource and adds it to the database.
+// AddPage takes a page object and adds it to the database mentioned in the page object.
 func (nc *NotionClient) AddPage(pg api.Page) (*api.Page, error) {
 	client := &http.Client{}
 

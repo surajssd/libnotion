@@ -13,6 +13,8 @@ import (
 	"github.com/surajssd/libnotion/api"
 )
 
+// FindDatabase is a Notion Client method takes in database name and returns a database object. This
+// method is useful when the database id is unknown.
 func (nc *NotionClient) FindDatabase(name string) (*api.Database, error) {
 	hasMore := true
 	startCursor := ""
