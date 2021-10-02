@@ -10,6 +10,10 @@ You can see that the database has six columns and four entries of the books.
 
 ## Code
 
+See the code here:
+
+<details open>
+
 ```go
 package main
 
@@ -79,6 +83,8 @@ func main() {
 	fmt.Println("page added successfully!")
 }
 ```
+
+</details>
 
 ## In Action
 
