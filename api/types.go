@@ -206,7 +206,7 @@ var (
 
 type ValueProperty struct {
 	ID          string            `json:"id,omitempty"`
-	Type        ValuePropertyType `json:"type,omitempty"`
+	Type        ValuePropertyType `json:"type"` // compulsory field.
 	MultiSelect []Option          `json:"multi_select,omitempty"`
 	Number      float64           `json:"number,omitempty"`
 	Date        *DateRange        `json:"date,omitempty"`
@@ -214,6 +214,7 @@ type ValueProperty struct {
 	Select      *Option           `json:"select,omitempty"`
 	Title       []Title           `json:"title,omitempty"`
 	Relation    []Relation        `json:"relation,omitempty"`
+	URL         string            `json:"url,omitempty"`
 }
 
 type Relation struct {
