@@ -5,7 +5,7 @@ const (
 	APIURL = "https://api.notion.com"
 
 	// NotionVersion is the Notion API release version.
-	NotionVersion = "2021-05-13"
+	NotionVersion = "2021-08-16"
 
 	// SubPathPages is the Notion API sub path for querying pages.
 	SubPathPages = "v1/pages"
