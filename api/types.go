@@ -21,8 +21,8 @@ type FailureResponse struct {
 
 // DatabaseResponseList is used to parse the response when querying database endpoint.
 type DatabaseResponseList struct {
-	Response
-	Results []Database `json:"results,omitempty"`
+	Response `json:",inline"`
+	Results  []Database `json:"results,omitempty"`
 }
 
 type CommonObject struct {
