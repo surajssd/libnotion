@@ -12,4 +12,7 @@ const (
 
 	// SubPathDatabases is the Notion API sub path for querying databases.
 	SubPathDatabases = "v1/databases"
+
+	// SubPathBlocks is the Notion API sub path for querying blocks.
+	SubPathBlocks = "v1/blocks"
 )
