@@ -25,8 +25,7 @@ type DatabaseResponseList struct {
 	Results []Database `json:"results,omitempty"`
 }
 
-// Database is used for storing database metadata like the columns in a database.
-type Database struct {
+type CommonObject struct {
 	// TODO: Convert to time.Time type.
 	// Date and time when this database was created. Formatted as an ISO 8601 date time string. e.g. "2020-03-17T19:10:04.968Z"
 	CreatedTime string `json:"created_time,omitempty"`
@@ -38,6 +37,11 @@ type Database struct {
 
 	// Always "database".
 	Object string `json:"object,omitempty"`
+}
+
+// Database is used for storing database metadata like the columns in a database.
+type Database struct {
+	CommonObject `json:",inline"`
 
 	// Title of database as it appears in Notion. An array of rich text objects.
 	Title []Title `json:"title,omitempty"`
@@ -49,24 +53,14 @@ type Database struct {
 
 // PageResponseList is used to parse the response when querying pages endpoint.
 type PageResponseList struct {
-	Response
-	Results []Page `json:"results,omitempty"`
+	Response `json:",inline"`
+	Results  []Page `json:"results,omitempty"`
 }
 
 // Page is used for storing all the information related to a page. If the page is a part of a
 // database then it includes properties as well.
 type Page struct {
-	// TODO: Convert to time.Time type.
-	// Date and time when this page was created. Formatted as an ISO 8601 date time string.
-	CreatedTime string `json:"created_time,omitempty"`
-	// Date and time when this page was updated. Formatted as an ISO 8601 date time string.
-	LastEditedTime string `json:"last_edited_time,omitempty"`
-
-	// Unique identifier of the page.
-	ID string `json:"id,omitempty"`
-
-	// Always "page".
-	Object string `json:"object,omitempty"`
+	CommonObject `json:",inline"`
 
 	// The parent of this page. Can be a database, page, or workspace.
 	Parent Parent `json:"parent,omitempty"`
