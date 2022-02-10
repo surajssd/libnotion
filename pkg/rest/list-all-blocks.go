@@ -9,6 +9,7 @@ import (
 	"path"
 
 	log "github.com/sirupsen/logrus"
+
 	"github.com/surajssd/libnotion/api"
 	"github.com/surajssd/libnotion/api/blocks"
 )
@@ -77,8 +78,8 @@ func (nc *NotionClient) ListBlocks(id string) ([]blocks.Block, error) {
 			return nil, fmt.Errorf("could not unmarshal response: %w", err)
 		}
 
-		hasMore = bl.Response.HasMore
-		startCursor = bl.Response.NextCursor
+		hasMore = bl.HasMore
+		startCursor = bl.NextCursor
 
 		ret = append(ret, bl.Results...)
 	}

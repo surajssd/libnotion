@@ -4,8 +4,8 @@ import "github.com/surajssd/libnotion/api"
 
 // PageResponseList is used to parse the response when querying pages endpoint.
 type BlockResponseList struct {
-	Response api.Response `json:",inline"`
-	Results  []Block      `json:"results,omitempty"`
+	api.Response `json:",inline"`
+	Results      []Block `json:"results,omitempty"`
 }
 
 type Block struct {
