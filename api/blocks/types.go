@@ -40,7 +40,7 @@ type Icon struct {
 
 type FullText struct {
 	Type        string       `json:"type,omitempty"`
-	Text        *Text        `json:"type,omitempty"`
+	Text        *Text        `json:"text,omitempty"`
 	Annotations *Annotations `json:"annotations,omitempty"`
 	PlainText   string       `json:"plain_text,omitempty"`
 }
