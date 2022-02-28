@@ -78,6 +78,7 @@ type Page struct {
 }
 
 // Title of database as it appears in Notion.
+// TODO: Rename this to RichText.
 type Title struct {
 	Type        string     `json:"type,omitempty"`
 	Text        Text       `json:"text,omitempty"`
@@ -209,6 +210,7 @@ type ValueProperty struct {
 	Title       []Title           `json:"title,omitempty"`
 	Relation    []Relation        `json:"relation,omitempty"`
 	URL         string            `json:"url,omitempty"`
+	RichText    []Title           `json:"rich_text,omitempty"`
 }
 
 type Relation struct {
