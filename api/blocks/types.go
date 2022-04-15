@@ -46,14 +46,9 @@ type FullText struct {
 }
 
 type Text struct {
-	Content string `json:"content,omitempty"`
-	Link    *Link  `json:"link,omitempty"`
+	Content string    `json:"content,omitempty"`
+	Link    *api.Link `json:"link,omitempty"`
 }
-
-type Link struct {
-	URL string `json:"url,omitempty"`
-}
-
 type Annotations struct {
 	Bold          bool   `json:"bold,omitempty"`
 	Italic        bool   `json:"italic,omitempty"`

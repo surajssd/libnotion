@@ -93,7 +93,11 @@ type Text struct {
 	Content string `json:"content,omitempty"`
 
 	// Any inline link in this text.
-	Link string `json:"link,omitempty"`
+	Link *Link `json:"link,omitempty"`
+}
+
+type Link struct {
+	URL string `json:"url,omitempty"`
 }
 
 type Annotation struct {
