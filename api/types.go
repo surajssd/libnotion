@@ -13,10 +13,11 @@ type Response struct {
 // FailureResponse is used to parse the response if the returned status code from the API is
 // non-200.
 type FailureResponse struct {
-	Object  string `json:"object,omitempty"`
-	Status  int    `json:"status,omitempty"`
-	Code    string `json:"code,omitempty"`
-	Message string `json:"message,omitempty"`
+	Object         string                 `json:"object,omitempty"`
+	Status         int                    `json:"status,omitempty"`
+	Code           string                 `json:"code,omitempty"`
+	Message        string                 `json:"message,omitempty"`
+	AdditionalData map[string]interface{} `json:"additional_data,omitempty"`
 }
 
 // DatabaseResponseList is used to parse the response when querying database endpoint.
@@ -37,6 +38,69 @@ type CommonObject struct {
 
 	// Always "database".
 	Object string `json:"object,omitempty"`
+
+	// Whether the object is in the trash. Added April 2024.
+	InTrash bool `json:"in_trash,omitempty"`
+
+	// User who created the object. Partial user object.
+	CreatedBy *User `json:"created_by,omitempty"`
+
+	// User who last edited the object. Partial user object.
+	LastEditedBy *User `json:"last_edited_by,omitempty"`
+}
+
+// User represents a Notion user (person or bot).
+type User struct {
+	// Always "user".
+	Object string `json:"object,omitempty"`
+
+	// Unique identifier for this user.
+	ID string `json:"id,omitempty"`
+
+	// Type of the user. Either "person" or "bot".
+	Type string `json:"type,omitempty"`
+
+	// User's name, as displayed in Notion.
+	Name string `json:"name,omitempty"`
+
+	// Chosen avatar image.
+	AvatarURL string `json:"avatar_url,omitempty"`
+
+	// Properties only present for type "person".
+	Person *Person `json:"person,omitempty"`
+
+	// Properties only present for type "bot".
+	Bot *Bot `json:"bot,omitempty"`
+}
+
+// Person contains person-specific user properties.
+type Person struct {
+	// Email address of person.
+	Email string `json:"email,omitempty"`
+}
+
+// Bot contains bot-specific user properties.
+type Bot struct {
+	// Information about who owns this bot.
+	Owner *Owner `json:"owner,omitempty"`
+
+	// If the owner is a workspace, the name of the workspace.
+	WorkspaceName string `json:"workspace_name,omitempty"`
+}
+
+// Owner represents the owner of a bot.
+type Owner struct {
+	// Type of owner: "workspace" or "user".
+	Type string `json:"type,omitempty"`
+
+	// User object if the owner is a user.
+	User *User `json:"user,omitempty"`
+}
+
+// UserResponseList is used to parse the response when listing users.
+type UserResponseList struct {
+	Response `json:",inline"`
+	Results  []User `json:"results,omitempty"`
 }
 
 // Database is used for storing database metadata like the columns in a database.
@@ -67,6 +131,10 @@ type Page struct {
 
 	// The archived status of the page.
 	Archived bool `json:"archived,omitempty"`
+
+	// Whether the page is locked from editing in the Notion app UI. Added Sept 2025.
+	// Note: This setting doesn't affect the ability to update the page using the API.
+	IsLocked bool `json:"is_locked,omitempty"`
 
 	// Property values of this page. If parent.type is "page_id" or "workspace", then the only valid
 	// key is title. If parent.type is "database_id", then the keys and values of this field are
@@ -147,6 +215,28 @@ type Property struct {
 	Select      Select   `json:"select,omitempty"`
 	Date        Date     `json:"date,omitempty"`
 	Checkbox    Checkbox `json:"checkbox,omitempty"`
+	Status      Status   `json:"status,omitempty"`
+}
+
+// Status property configuration for databases.
+type Status struct {
+	Options []StatusOption `json:"options,omitempty"`
+	Groups  []StatusGroup  `json:"groups,omitempty"`
+}
+
+// StatusOption represents a single status option.
+type StatusOption struct {
+	ID    string `json:"id,omitempty"`
+	Name  string `json:"name,omitempty"`
+	Color string `json:"color,omitempty"`
+}
+
+// StatusGroup represents a group of status options.
+type StatusGroup struct {
+	ID        string   `json:"id,omitempty"`
+	Name      string   `json:"name,omitempty"`
+	Color     string   `json:"color,omitempty"`
+	OptionIDs []string `json:"option_ids,omitempty"`
 }
 
 // Sorted list of options available for this property.
@@ -215,6 +305,7 @@ type ValueProperty struct {
 	Relation    []Relation        `json:"relation,omitempty"`
 	URL         string            `json:"url,omitempty"`
 	RichText    []Title           `json:"rich_text,omitempty"`
+	Status      *Option           `json:"status,omitempty"`
 }
 
 type Relation struct {
@@ -243,6 +334,7 @@ var (
 	ValuePropertyTypeCreatedBy      = ValuePropertyType("created_by")
 	ValuePropertyTypeLastEditedTime = ValuePropertyType("last_edited_time")
 	ValuePropertyTypeLastEditedBy   = ValuePropertyType("last_edited_by")
+	ValuePropertyTypeStatus         = ValuePropertyType("status")
 )
 
 // DateRange is used to specify span of date between start and end.
@@ -310,6 +402,7 @@ type PropertyFilter struct {
 	Date           *DateFilter        `json:"date,omitempty"`
 	CreatedTime    *DateFilter        `json:"created_time,omitempty"`
 	LastEditedTime *DateFilter        `json:"last_edited_time,omitempty"`
+	Status         *StatusFilter      `json:"status,omitempty"`
 }
 
 var (
@@ -372,4 +465,52 @@ type DateFilter struct {
 	NextWeek   *string `json:"next_week,omitempty"`
 	NextMonth  *string `json:"next_month,omitempty"`
 	NextYear   *string `json:"next_year,omitempty"`
+}
+
+// StatusFilter is used to filter pages by status property.
+type StatusFilter struct {
+	Equals       string `json:"equals,omitempty"`
+	DoesNotEqual string `json:"does_not_equal,omitempty"`
+	IsEmpty      bool   `json:"is_empty,omitempty"`
+	IsNotEmpty   bool   `json:"is_not_empty,omitempty"`
+}
+
+// DataSource represents a data source within a multi-source database.
+// Added in API version 2025-09-03.
+type DataSource struct {
+	CommonObject `json:",inline"`
+
+	// Title of data source as it appears in Notion.
+	Title []Title `json:"title,omitempty"`
+
+	// Property schema of this data source.
+	Properties map[string]Property `json:"properties,omitempty"`
+
+	// The parent database that contains this data source.
+	Parent Parent `json:"parent,omitempty"`
+}
+
+// DataSourceResponseList is used to parse the response when listing data sources.
+type DataSourceResponseList struct {
+	Response `json:",inline"`
+	Results  []DataSource `json:"results,omitempty"`
+}
+
+// MovePageRequest is used to move a page to a new parent.
+type MovePageRequest struct {
+	// The new parent for the page.
+	Parent Parent `json:"parent"`
+
+	// Position of the page within the new parent. Optional.
+	// Can be "before" or "after" with a sibling page ID.
+	Position *PagePosition `json:"position,omitempty"`
+}
+
+// PagePosition specifies where to position a page relative to siblings.
+type PagePosition struct {
+	// Position type: "before" or "after".
+	Type string `json:"type,omitempty"`
+
+	// The sibling page ID to position relative to.
+	PageID string `json:"page_id,omitempty"`
 }

@@ -27,7 +27,7 @@ func (nc *NotionClient) QueryDatabase(id string, query *api.QueryDB) ([]api.Page
 		return nil, fmt.Errorf("parsing the APIURL: %w", err)
 	}
 
-	u.Path = path.Join(u.Path, SubPathDatabases, id, "query")
+	u.Path = path.Join(u.Path, SubPathDataSources, id, "query")
 	listURL := u.String()
 
 	var body io.Reader
@@ -66,7 +66,7 @@ func (nc *NotionClient) QueryDatabase(id string, query *api.QueryDB) ([]api.Page
 			failedResp := api.FailureResponse{}
 
 			if respErr != nil {
-				log.Debugf("reading the response: %v", err)
+				log.Debugf("reading the response: %v", respErr)
 			} else {
 				if err := json.Unmarshal(data, &failedResp); err != nil {
 					log.Debugf("unmarshalling failure response: %v", err)
