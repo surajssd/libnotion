@@ -22,7 +22,7 @@ func (nc *NotionClient) QueryDatabase(id string, query *api.QueryDB) ([]api.Page
 	client := &http.Client{}
 	var ret []api.Page
 
-	u, err := url.Parse(APIURL)
+	u, err := url.Parse(nc.getBaseURL())
 	if err != nil {
 		return nil, fmt.Errorf("parsing the APIURL: %w", err)
 	}
@@ -58,9 +58,8 @@ func (nc *NotionClient) QueryDatabase(id string, query *api.QueryDB) ([]api.Page
 			return nil, fmt.Errorf("listing database entries: %w", err)
 		}
 
-		defer resp.Body.Close()
-
 		data, respErr := io.ReadAll(resp.Body)
+		resp.Body.Close()
 
 		if resp.StatusCode != http.StatusOK {
 			failedResp := api.FailureResponse{}
@@ -78,7 +77,7 @@ func (nc *NotionClient) QueryDatabase(id string, query *api.QueryDB) ([]api.Page
 		}
 
 		if respErr != nil {
-			return nil, fmt.Errorf("reading the response: %w", err)
+			return nil, fmt.Errorf("reading the response: %w", respErr)
 		}
 
 		pages := api.PageResponseList{}

@@ -20,7 +20,7 @@ func (nc *NotionClient) FindDatabase(name string) (*api.Database, error) {
 	startCursor := ""
 	client := &http.Client{}
 
-	u, err := url.Parse(APIURL)
+	u, err := url.Parse(nc.getBaseURL())
 	if err != nil {
 		return nil, fmt.Errorf("parsing the APIURL: %w", err)
 	}
@@ -48,14 +48,14 @@ func (nc *NotionClient) FindDatabase(name string) (*api.Database, error) {
 			return nil, fmt.Errorf("listing databases: %w", err)
 		}
 
-		defer resp.Body.Close()
 		data, respErr := io.ReadAll(resp.Body)
+		resp.Body.Close()
 
 		if resp.StatusCode != http.StatusOK {
 			failedResp := api.FailureResponse{}
 
 			if respErr != nil {
-				log.Debugf("reading the response: %v", err)
+				log.Debugf("reading the response: %v", respErr)
 			} else {
 				if err := json.Unmarshal(data, &failedResp); err != nil {
 					log.Debugf("unmarshalling failure response: %v", err)
@@ -68,7 +68,7 @@ func (nc *NotionClient) FindDatabase(name string) (*api.Database, error) {
 
 		// Check if there is any error while reading the response Data.
 		if respErr != nil {
-			return nil, fmt.Errorf("reading the response: %w", err)
+			return nil, fmt.Errorf("reading the response: %w", respErr)
 		}
 
 		databases := api.DatabaseResponseList{}
