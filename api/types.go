@@ -267,11 +267,14 @@ type Date struct{}
 type Checkbox struct{}
 
 type Parent struct {
-	// The paret type could be page, database or workspace.
+	// The parent type could be page, database, data_source or workspace.
 	Type ParentType `json:"type,omitempty"`
 
 	// The ID of the database that this page belongs to.
 	DatabaseID string `json:"database_id,omitempty"`
+
+	// The ID of the data source that this page belongs to.
+	DataSourceID string `json:"data_source_id,omitempty"`
 
 	// The ID of the page that this page belongs to.
 	PageID string `json:"page_id,omitempty"`
@@ -285,6 +288,9 @@ type ParentType string
 var (
 	// If the parent is database.
 	ParentTypeDatabase = ParentType("database_id")
+
+	// If the parent is a data source.
+	ParentTypeDataSource = ParentType("data_source_id")
 
 	// If the parent is a page.
 	ParentTypePage = ParentType("page_id")
