@@ -502,19 +502,38 @@ func TestBlock_Template(t *testing.T) {
 
 func TestProperty_JSON(t *testing.T) {
 	prop := Property{
-		Text:    []FullText{{PlainText: "text content"}},
-		Icon:    &Icon{Type: "emoji", Emoji: "🔥"},
-		Checked: true,
+		Text:     []FullText{{PlainText: "text content"}},
+		RichText: []FullText{{PlainText: "rich text content"}},
+		Icon:     &Icon{Type: "emoji", Emoji: "🔥"},
+		Checked:  true,
 	}
 	got := jsonRoundTrip(t, prop)
 	if len(got.Text) != 1 || got.Text[0].PlainText != "text content" {
 		t.Errorf("unexpected Text: %+v", got.Text)
+	}
+	if len(got.RichText) != 1 || got.RichText[0].PlainText != "rich text content" {
+		t.Errorf("unexpected RichText: %+v", got.RichText)
 	}
 	if got.Icon == nil || got.Icon.Emoji != "🔥" {
 		t.Errorf("unexpected Icon: %+v", got.Icon)
 	}
 	if !got.Checked {
 		t.Error("expected Checked true")
+	}
+}
+
+func TestProperty_RichText_Unmarshal(t *testing.T) {
+	// Simulate Notion API v2025-09-03 response which uses "rich_text" key.
+	data := []byte(`{"rich_text": [{"plain_text": "Hello from rich_text"}]}`)
+	var got Property
+	if err := json.Unmarshal(data, &got); err != nil {
+		t.Fatalf("json.Unmarshal failed: %v", err)
+	}
+	if len(got.RichText) != 1 || got.RichText[0].PlainText != "Hello from rich_text" {
+		t.Errorf("unexpected RichText: %+v", got.RichText)
+	}
+	if len(got.Text) != 0 {
+		t.Errorf("expected empty Text, got: %+v", got.Text)
 	}
 }
 
@@ -563,10 +582,10 @@ func TestFullText_Annotations_All(t *testing.T) {
 
 func TestFileBlock_JSON(t *testing.T) {
 	fb := FileBlock{
-		Caption:  []FullText{{PlainText: "A file"}},
-		Type:     "file",
-		File:     &NotionFile{URL: "https://notion.so/file.pdf", ExpiryTime: "2025-01-01T00:00:00Z"},
-		Name:     "document.pdf",
+		Caption: []FullText{{PlainText: "A file"}},
+		Type:    "file",
+		File:    &NotionFile{URL: "https://notion.so/file.pdf", ExpiryTime: "2025-01-01T00:00:00Z"},
+		Name:    "document.pdf",
 	}
 	got := jsonRoundTrip(t, fb)
 	if got.Type != "file" {

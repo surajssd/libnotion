@@ -65,9 +65,10 @@ type Block struct {
 }
 
 type Property struct {
-	Text    []FullText `json:"text,omitempty"`
-	Icon    *Icon      `json:"icon,omitempty"`
-	Checked bool       `json:"checked,omitempty"`
+	Text     []FullText `json:"text,omitempty"`
+	RichText []FullText `json:"rich_text,omitempty"`
+	Icon     *Icon      `json:"icon,omitempty"`
+	Checked  bool       `json:"checked,omitempty"`
 }
 
 type Icon struct {
@@ -99,19 +100,19 @@ type Annotations struct {
 type BT string
 
 var (
-	BTBulletListItem  = BT("bulleted_list_item")
+	BTBulletListItem   = BT("bulleted_list_item")
 	BTNumberedListItem = BT("numbered_list_item")
-	BTCallout         = BT("callout")
-	BTParagraph       = BT("paragraph")
-	BTHeading1        = BT("heading_1")
-	BTHeading2        = BT("heading_2")
-	BTHeading3        = BT("heading_3")
-	BTTodo            = BT("to_do")
-	BTQuote           = BT("quote")
-	BTToggle          = BT("toggle")
-	BTUnsupported     = BT("unsupported")
-	BTTable           = BT("table")
-	BTDivider         = BT("divider")
+	BTCallout          = BT("callout")
+	BTParagraph        = BT("paragraph")
+	BTHeading1         = BT("heading_1")
+	BTHeading2         = BT("heading_2")
+	BTHeading3         = BT("heading_3")
+	BTTodo             = BT("to_do")
+	BTQuote            = BT("quote")
+	BTToggle           = BT("toggle")
+	BTUnsupported      = BT("unsupported")
+	BTTable            = BT("table")
+	BTDivider          = BT("divider")
 	// Media block types
 	BTImage = BT("image")
 	BTVideo = BT("video")
