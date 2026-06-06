@@ -1,0 +1,31 @@
+{
+  "$schema": "https://docs.renovatebot.com/renovate-schema.json",
+  "extends": [
+    "config:recommended",
+    ":maintainLockFilesWeekly"
+  ],
+  "labels": [
+    "dependencies"
+  ],
+  "packageRules": [
+    {
+      "description": "Group non-major Go module updates into a single PR to reduce noise",
+      "matchManagers": [
+        "gomod"
+      ],
+      "matchUpdateTypes": [
+        "minor",
+        "patch",
+        "digest"
+      ],
+      "groupName": "go modules (non-major)"
+    },
+    {
+      "description": "Group all GitHub Actions updates into a single PR",
+      "matchManagers": [
+        "github-actions"
+      ],
+      "groupName": "github actions"
+    }
+  ]
+}
