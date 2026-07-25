@@ -80,6 +80,63 @@ func TestAddPage_Success(t *testing.T) {
 	}
 }
 
+func TestAddPage_WithChildren(t *testing.T) {
+	server := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		body, err := io.ReadAll(r.Body)
+		if err != nil {
+			t.Fatalf("reading request body: %v", err)
+		}
+
+		var pg api.Page
+		if err := json.Unmarshal(body, &pg); err != nil {
+			t.Fatalf("unmarshalling request body: %v", err)
+		}
+
+		if len(pg.Children) != 3 {
+			t.Errorf("expected 3 children, got %d", len(pg.Children))
+		}
+		if len(pg.Children) == 3 && len(pg.Children[1].Paragraph.RichText) != 0 {
+			t.Errorf("expected empty middle paragraph, got %d segments", len(pg.Children[1].Paragraph.RichText))
+		}
+
+		w.Header().Set("Content-Type", "application/json")
+		json.NewEncoder(w).Encode(api.Page{
+			CommonObject: api.CommonObject{
+				ID:  "page-456",
+				URL: "https://www.notion.so/page-456",
+			},
+		})
+	}))
+	defer server.Close()
+
+	client := newTestClient(server.URL)
+	result, err := client.AddPage(api.Page{
+		Children: api.ParagraphBlocksFromText("line one\n\nline three"),
+	})
+	if err != nil {
+		t.Fatalf("unexpected error: %v", err)
+	}
+	if result.URL != "https://www.notion.so/page-456" {
+		t.Errorf("expected page URL to unmarshal, got %q", result.URL)
+	}
+}
+
+func TestAddPage_TooManyChildren(t *testing.T) {
+	children := make([]api.ChildBlock, 101)
+	for i := range children {
+		children[i] = api.NewParagraphBlock("line")
+	}
+
+	client := newTestClient("http://unused.invalid")
+	_, err := client.AddPage(api.Page{Children: children})
+	if err == nil {
+		t.Fatal("expected error, got nil")
+	}
+	if got := err.Error(); !contains(got, "at most 100") {
+		t.Errorf("unexpected error message: %s", got)
+	}
+}
+
 func TestAddPage_Non200Response(t *testing.T) {
 	server := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		w.WriteHeader(http.StatusBadRequest)

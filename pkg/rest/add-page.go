@@ -13,8 +13,17 @@ import (
 	"github.com/surajssd/libnotion/api"
 )
 
+// maxChildrenPerCreate is the Notion API limit on children blocks in a single
+// page-create request.
+const maxChildrenPerCreate = 100
+
 // AddPage takes a page object and adds it to the database mentioned in the page object.
 func (nc *NotionClient) AddPage(pg api.Page) (*api.Page, error) {
+	if len(pg.Children) > maxChildrenPerCreate {
+		return nil, fmt.Errorf("page has %d children blocks, Notion allows at most %d per create request",
+			len(pg.Children), maxChildrenPerCreate)
+	}
+
 	client := &http.Client{}
 
 	u, err := url.Parse(nc.getBaseURL())

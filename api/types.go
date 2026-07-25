@@ -36,6 +36,10 @@ type CommonObject struct {
 	// Unique identifier for the database.
 	ID string `json:"id,omitempty"`
 
+	// URL of the object in the Notion app. Response-only; omitempty keeps it
+	// off write payloads.
+	URL string `json:"url,omitempty"`
+
 	// Always "database".
 	Object string `json:"object,omitempty"`
 
@@ -143,6 +147,10 @@ type Page struct {
 	// key string: Name of a property as it appears in Notion.
 	// value object: A Property value object.
 	Properties map[string]ValueProperty `json:"properties,omitempty"`
+
+	// Children blocks to create as the page body. Write-only: page responses
+	// never include children, so this stays empty when parsing responses.
+	Children []ChildBlock `json:"children,omitempty"`
 }
 
 // Title of database as it appears in Notion.
